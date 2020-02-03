@@ -174,8 +174,7 @@ def fetch_HPCA(which, normalize=True, lower=False, clean_words=False):
     Reference paper: Lebret, Collobert et al., “The Sum of Its Parts”: Joint Learning of Word and Phrase Representations with Autoencoders", 2015
     """
     download_file = {
-            "autoencoder_phrase_hpca": "https://www.dropbox.com/s/6dyf48crdmjbw1a/AHPCA.bin.gz?dl=1",
-            "hpca": "https://www.dropbox.com/s/5y5l6vyn8yn11dv/HPCA.bin.gz?dl=1"
+            "hpca": "http://lebret.ch/words"
     }
 
     path = _fetch_file(url=download_file[which],

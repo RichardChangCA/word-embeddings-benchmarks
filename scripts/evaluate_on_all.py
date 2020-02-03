@@ -18,10 +18,26 @@
 from optparse import OptionParser
 import logging
 import os
-from web.embeddings import fetch_GloVe, load_embedding
+import web
+from importlib import reload
+
+from web import evaluate
+# reload(evaluate)
+import sys
+del sys.modules['web.evaluate']
+reload(web)
+from web import evaluate
+
+from web.embeddings import fetch_GloVe, load_embedding,fetch_HPCA,fetch_morphoRNNLM,fetch_NMT, \
+        fetch_PDC,fetch_HDC,fetch_SG_GoogleNews,fetch_LexVec,fetch_conceptnet_numberbatch,fetch_FastText
+
 from web.datasets.utils import _get_dataset_dir
 
-from web.evaluate import evaluate_on_all
+# from web.evaluate import evaluate_on_all
+
+import pandas as pd
+from six import iteritems
+
 
 
 # Configure logging
@@ -47,41 +63,65 @@ parser.add_option("-c", "--clean_words", dest="clean_words",
                   default=False)
 
 if __name__ == "__main__":
+
+    pretrained_word_embeddings = {
+        "GloVe": fetch_GloVe(corpus="wiki-6B", dim=300),
+        # "CBOW":
+        # "Skip-grams":
+        # "HPCA": fetch_HPCA(which="hpca"),
+        "PDC": fetch_PDC(),
+        "HDC": fetch_HDC(),
+        "SG_GoogleNews": fetch_SG_GoogleNews(),
+        "LexVec": fetch_LexVec(),
+        "Conceptnet_numberbatch": fetch_conceptnet_numberbatch(),
+    }
+    
+
     (options, args) = parser.parse_args()
 
     # Load embeddings
     fname = options.filename
-    if not fname:
-        w = fetch_GloVe(corpus="wiki-6B", dim=300)
-    else:
-        if not os.path.isabs(fname):
-            fname = os.path.join(_get_dataset_dir(), fname)
+    # if not fname:
+    #     w = fetch_GloVe(corpus="wiki-6B", dim=300)
+    # else:
+    #     if not os.path.isabs(fname):
+    #         fname = os.path.join(_get_dataset_dir(), fname)
 
-        format = options.format
+    #     format = options.format
 
-        if not format:
-            _, ext = os.path.splitext(fname)
-            if ext == ".bin":
-                format = "word2vec_bin"
-            elif ext == ".txt":
-                format = "word2vec"
-            elif ext == ".pkl":
-                format = "dict"
+    #     if not format:
+    #         _, ext = os.path.splitext(fname)
+    #         if ext == ".bin":
+    #             format = "word2vec_bin"
+    #         elif ext == ".txt":
+    #             format = "word2vec"
+    #         elif ext == ".pkl":
+    #             format = "dict"
 
-        assert format in ['word2vec_bin', 'word2vec', 'glove', 'bin'], "Unrecognized format"
+    #     assert format in ['word2vec_bin', 'word2vec', 'glove', 'bin'], "Unrecognized format"
 
-        load_kwargs = {}
-        if format == "glove":
-            load_kwargs['vocab_size'] = sum(1 for line in open(fname))
-            load_kwargs['dim'] = len(next(open(fname)).split()) - 1
+    #     load_kwargs = {}
+    #     if format == "glove":
+    #         load_kwargs['vocab_size'] = sum(1 for line in open(fname))
+    #         load_kwargs['dim'] = len(next(open(fname)).split()) - 1
 
-        w = load_embedding(fname, format=format, normalize=True, lower=True, clean_words=options.clean_words,
-                           load_kwargs=load_kwargs)
+    #     w = load_embedding(fname, format=format, normalize=True, lower=True, clean_words=options.clean_words,
+    #                        load_kwargs=load_kwargs)
 
+    if os.path.exists("results.csv"):
+        os.remove("results.csv")
     out_fname = options.output if options.output else "results.csv"
 
-    results = evaluate_on_all(w)
+    results_sum = pd.DataFrame()
 
-    logger.info("Saving results...")
-    print(results)
-    results.to_csv(out_fname)
+    for name, w in iteritems(pretrained_word_embeddings):
+        results = evaluate.evaluate_on_all(w,name)
+        logger.info("Saving results... {}".format(name))
+        print("results:", results)
+        results_sum = results_sum.append(results)
+    results_sum.to_csv(out_fname)
+
+    # results = evaluate_on_all(w)
+    # print(results)
+    # results.to_csv(out_fname)
+    

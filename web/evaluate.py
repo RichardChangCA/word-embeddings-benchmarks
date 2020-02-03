@@ -5,7 +5,8 @@
 import logging
 import numpy as np
 from sklearn.cluster import AgglomerativeClustering, KMeans
-from .datasets.similarity import fetch_MEN, fetch_WS353, fetch_SimLex999, fetch_MTurk, fetch_RG65, fetch_RW, fetch_TR9856
+from .datasets.similarity import fetch_MEN, fetch_WS353, fetch_SimLex999, fetch_MTurk, fetch_RG65, fetch_RW, \
+    fetch_TR9856,fetch_multilingual_SimLex999
 from .datasets.categorization import fetch_AP, fetch_battig, fetch_BLESS, fetch_ESSLI_1a, fetch_ESSLI_2b, \
     fetch_ESSLI_2c
 from web.analogy import *
@@ -339,7 +340,7 @@ def evaluate_similarity(w, X, y):
     return scipy.stats.spearmanr(scores, y).correlation
 
 
-def evaluate_on_all(w):
+def evaluate_on_all(w,word_embedding_name):
     """
     Evaluate Embedding on all fast-running benchmarks
 
@@ -359,14 +360,17 @@ def evaluate_on_all(w):
     # Calculate results on similarity
     logger.info("Calculating similarity benchmarks")
     similarity_tasks = {
+        "MTurk": fetch_MTurk(),
         "MEN": fetch_MEN(),
         "WS353": fetch_WS353(),
-        "WS353R": fetch_WS353(which="relatedness"),
-        "WS353S": fetch_WS353(which="similarity"),
+        # "WS353R": fetch_WS353(which="relatedness"),
+        # "WS353S": fetch_WS353(which="similarity"),
+        "Rubenstein_and_Goodenough": fetch_RG65(),
+        "Rare_Words": fetch_RW(),
+        "Multilingual_SimLex999": fetch_multilingual_SimLex999(which="EN"),
         "SimLex999": fetch_SimLex999(),
-        "RW": fetch_RW(),
-        "RG65": fetch_RG65(),
-        "MTurk": fetch_MTurk(),
+        "TR9856": fetch_TR9856(),
+        # "RG65": fetch_RG65(),
     }
 
     similarity_results = {}
@@ -378,8 +382,10 @@ def evaluate_on_all(w):
     # Calculate results on analogy
     logger.info("Calculating analogy benchmarks")
     analogy_tasks = {
-        "Google": fetch_google_analogy(),
-        "MSR": fetch_msr_analogy()
+        "MSR_WordRep": fetch_wordrep(),
+        "Google_analogy": fetch_google_analogy(),
+        "MSR": fetch_msr_analogy(),
+        # "SEMEVAL 2012 Task 2" 
     }
 
     analogy_results = {}
@@ -389,30 +395,35 @@ def evaluate_on_all(w):
         logger.info("Analogy prediction accuracy on {} {}".format(name, analogy_results[name]))
 
     analogy_results["SemEval2012_2"] = evaluate_on_semeval_2012_2(w)['all']
-    logger.info("Analogy prediction accuracy on {} {}".format("SemEval2012", analogy_results["SemEval2012_2"]))
+    logger.info("Analogy prediction accuracy on {} {}".format("SemEval_2012_Task_2", analogy_results["SemEval2012_2"]))
 
-    # Calculate results on categorization
-    logger.info("Calculating categorization benchmarks")
-    categorization_tasks = {
-        "AP": fetch_AP(),
-        "BLESS": fetch_BLESS(),
-        "Battig": fetch_battig(),
-        "ESSLI_2c": fetch_ESSLI_2c(),
-        "ESSLI_2b": fetch_ESSLI_2b(),
-        "ESSLI_1a": fetch_ESSLI_1a()
-    }
+    # # Calculate results on categorization
+    # logger.info("Calculating categorization benchmarks")
+    # categorization_tasks = {
+    #     "AP": fetch_AP(),
+    #     "BLESS": fetch_BLESS(),
+    #     "Battig": fetch_battig(),
+    #     "ESSLI_2c": fetch_ESSLI_2c(),
+    #     "ESSLI_2b": fetch_ESSLI_2b(),
+    #     "ESSLI_1a": fetch_ESSLI_1a()
+    # }
 
-    categorization_results = {}
+    # categorization_results = {}
 
-    # Calculate results using helper function
-    for name, data in iteritems(categorization_tasks):
-        categorization_results[name] = evaluate_categorization(w, data.X, data.y)
-        logger.info("Cluster purity on {} {}".format(name, categorization_results[name]))
+    # # Calculate results using helper function
+    # for name, data in iteritems(categorization_tasks):
+    #     categorization_results[name] = evaluate_categorization(w, data.X, data.y)
+    #     logger.info("Cluster purity on {} {}".format(name, categorization_results[name]))
 
-    # Construct pd table
-    cat = pd.DataFrame([categorization_results])
+    # # Construct pd table
+    # cat = pd.DataFrame([categorization_results])
     analogy = pd.DataFrame([analogy_results])
     sim = pd.DataFrame([similarity_results])
-    results = cat.join(sim).join(analogy)
+    # results = cat.join(sim).join(analogy)
+    w_name = {"word_embedding": word_embedding_name}
+    w_name = pd.DataFrame([w_name])
+    results = w_name.join(sim).join(analogy)
+
+    # results = sim.join(analogy)
 
     return results
