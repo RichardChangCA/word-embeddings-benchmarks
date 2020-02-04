@@ -10,10 +10,15 @@ from .datasets.similarity import fetch_MEN, fetch_WS353, fetch_SimLex999, fetch_
 from .datasets.categorization import fetch_AP, fetch_battig, fetch_BLESS, fetch_ESSLI_1a, fetch_ESSLI_2b, \
     fetch_ESSLI_2c
 from web.analogy import *
+from .datasets.analogy import fetch_wordrep,fetch_google_analogy,fetch_msr_analogy
 from six import iteritems
 from web.embedding import Embedding
+import scipy
 
 logger = logging.getLogger(__name__)
+
+def print_something():
+    print("I love you")
 
 def calculate_purity(y_true, y_pred):
     """
@@ -382,7 +387,7 @@ def evaluate_on_all(w,word_embedding_name):
     # Calculate results on analogy
     logger.info("Calculating analogy benchmarks")
     analogy_tasks = {
-        "MSR_WordRep": fetch_wordrep(),
+        # "MSR_WordRep": fetch_wordrep(),
         "Google_analogy": fetch_google_analogy(),
         "MSR": fetch_msr_analogy(),
         # "SEMEVAL 2012 Task 2" 
@@ -393,6 +398,9 @@ def evaluate_on_all(w,word_embedding_name):
     for name, data in iteritems(analogy_tasks):
         analogy_results[name] = evaluate_analogy(w, data.X, data.y)
         logger.info("Analogy prediction accuracy on {} {}".format(name, analogy_results[name]))
+
+    analogy_results["MSR_WordRep"] = evaluate_on_WordRep(w)
+    logger.info("Analogy prediction accuracy on {} {}".format("MSR_WordRep", analogy_results["MSR_WordRep"]))
 
     analogy_results["SemEval2012_2"] = evaluate_on_semeval_2012_2(w)['all']
     logger.info("Analogy prediction accuracy on {} {}".format("SemEval_2012_Task_2", analogy_results["SemEval2012_2"]))

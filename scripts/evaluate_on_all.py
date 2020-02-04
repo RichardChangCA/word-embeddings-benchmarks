@@ -18,14 +18,17 @@
 from optparse import OptionParser
 import logging
 import os
+import sys
+sys.path.append("/Users/zhanglingfeng/Desktop/word-embeddings-benchmarks/")
 import web
 from importlib import reload
 
 from web import evaluate
 # reload(evaluate)
-import sys
+
 del sys.modules['web.evaluate']
 reload(web)
+
 from web import evaluate
 
 from web.embeddings import fetch_GloVe, load_embedding,fetch_HPCA,fetch_morphoRNNLM,fetch_NMT, \
@@ -38,7 +41,7 @@ from web.datasets.utils import _get_dataset_dir
 import pandas as pd
 from six import iteritems
 
-
+evaluate.print_something()
 
 # Configure logging
 logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', level=logging.DEBUG, datefmt='%I:%M:%S')
@@ -114,9 +117,9 @@ if __name__ == "__main__":
 
     results_sum = pd.DataFrame()
 
-    for name, w in iteritems(pretrained_word_embeddings):
-        results = evaluate.evaluate_on_all(w,name)
-        logger.info("Saving results... {}".format(name))
+    for word_embedding_name, w in iteritems(pretrained_word_embeddings):
+        results = evaluate.evaluate_on_all(w,word_embedding_name)
+        logger.info("Saving results... {}".format(word_embedding_name))
         print("results:", results)
         results_sum = results_sum.append(results)
     results_sum.to_csv(out_fname)
