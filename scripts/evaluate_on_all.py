@@ -23,11 +23,9 @@ sys.path.append("/Users/zhanglingfeng/Desktop/word-embeddings-benchmarks/")
 import web
 from importlib import reload
 
-from web import evaluate
-# reload(evaluate)
-
-del sys.modules['web.evaluate']
-reload(web)
+# from web import evaluate
+# del sys.modules['web.evaluate']
+# reload(web)
 
 from web import evaluate
 
@@ -72,11 +70,12 @@ if __name__ == "__main__":
         # "CBOW":
         # "Skip-grams":
         # "HPCA": fetch_HPCA(which="hpca"),
-        "PDC": fetch_PDC(),
-        "HDC": fetch_HDC(),
-        "SG_GoogleNews": fetch_SG_GoogleNews(),
-        "LexVec": fetch_LexVec(),
-        "Conceptnet_numberbatch": fetch_conceptnet_numberbatch(),
+
+        # "PDC": fetch_PDC(),
+        # "HDC": fetch_HDC(),
+        # "SG_GoogleNews": fetch_SG_GoogleNews(),
+        # "LexVec": fetch_LexVec(),
+        # "Conceptnet_numberbatch": fetch_conceptnet_numberbatch(),
     }
     
 
