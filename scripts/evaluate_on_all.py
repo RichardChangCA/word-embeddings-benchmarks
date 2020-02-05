@@ -19,7 +19,7 @@ from optparse import OptionParser
 import logging
 import os
 import sys
-sys.path.append("/Users/zhanglingfeng/Desktop/word-embeddings-benchmarks/")
+sys.path.append("/home/lingfeng/Desktop/word-embeddings-benchmarks/")
 import web
 from importlib import reload
 
