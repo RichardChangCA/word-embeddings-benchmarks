@@ -112,12 +112,15 @@ if __name__ == "__main__":
 
     results_sum = pd.DataFrame()
 
+    temporary_file = open("results.txt",'w')
     for word_embedding_name, w in iteritems(pretrained_word_embeddings):
         results = evaluate.evaluate_on_all(w,word_embedding_name)
         logger.info("Saving results... {}".format(word_embedding_name))
         print("results:", results)
+        temporary_file.write(str(results)+'\n')
         results_sum = results_sum.append(results)
     results_sum.to_csv(out_fname)
+    temporary_file.close()
 
     # results = evaluate_on_all(w)
     # print(results)

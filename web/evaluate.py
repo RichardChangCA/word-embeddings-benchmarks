@@ -225,8 +225,8 @@ def evaluate_analogy(w, X, y, method="add", k=None, category=None, batch_size=10
     else:
         return np.mean(y_pred == y)
 
-
-def evaluate_on_WordRep(w, max_pairs=1000, solver_kwargs={}):
+# max_pairs should be 1000 originally
+def evaluate_on_WordRep(w, max_pairs=100, solver_kwargs={}):
     """
     Evaluate on WordRep dataset
 
@@ -284,21 +284,22 @@ def evaluate_on_WordRep(w, max_pairs=1000, solver_kwargs={}):
         accuracy[cat] = float(np.sum(y_pred == y)) / size
 
     # Add summary results
-    correct['wikipedia'] = sum(correct[c] for c in categories if c in data.wikipedia_categories)
+    # correct['wikipedia'] = sum(correct[c] for c in categories if c in data.wikipedia_categories)
     correct['all'] = sum(correct[c] for c in categories)
-    correct['wordnet'] = sum(correct[c] for c in categories if c in data.wordnet_categories)
+    # correct['wordnet'] = sum(correct[c] for c in categories if c in data.wordnet_categories)
 
-    count['wikipedia'] = sum(count[c] for c in categories if c in data.wikipedia_categories)
+    # count['wikipedia'] = sum(count[c] for c in categories if c in data.wikipedia_categories)
     count['all'] = sum(count[c] for c in categories)
-    count['wordnet'] = sum(count[c] for c in categories if c in data.wordnet_categories)
+    # count['wordnet'] = sum(count[c] for c in categories if c in data.wordnet_categories)
 
-    accuracy['wikipedia'] = correct['wikipedia'] / count['wikipedia']
+    # accuracy['wikipedia'] = correct['wikipedia'] / count['wikipedia']
     accuracy['all'] = correct['all'] / count['all']
-    accuracy['wordnet'] = correct['wordnet'] / count['wordnet']
+    # accuracy['wordnet'] = correct['wordnet'] / count['wordnet']
 
-    return pd.concat([pd.Series(accuracy, name="accuracy"),
-                      pd.Series(correct, name="correct"),
-                      pd.Series(count, name="count")], axis=1)
+    # return pd.concat([pd.Series(accuracy, name="accuracy"),
+    #                   pd.Series(correct, name="correct"),
+    #                   pd.Series(count, name="count")], axis=1)
+    return pd.Series(accuracy)
 
 
 def evaluate_similarity(w, X, y):
@@ -391,7 +392,7 @@ def evaluate_on_all(w,word_embedding_name):
         analogy_results[name] = evaluate_analogy(w, data.X, data.y)
         logger.info("Analogy prediction accuracy on {} {}".format(name, analogy_results[name]))
 
-    analogy_results["MSR_WordRep"] = evaluate_on_WordRep(w)['all']['accuracy']
+    analogy_results["MSR_WordRep"] = evaluate_on_WordRep(w)['all']
     logger.info("Analogy prediction accuracy on {} {}".format("MSR_WordRep", analogy_results["MSR_WordRep"]))
 
     analogy_results["SemEval2012_2"] = evaluate_on_semeval_2012_2(w)['all']
