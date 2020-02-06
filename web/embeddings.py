@@ -4,6 +4,7 @@
 """
 from six.moves import cPickle as pickle
 from os import path
+import numpy as np
 from .datasets.utils import _get_dataset_dir, _fetch_file
 from .embedding import Embedding
 
@@ -48,7 +49,35 @@ def load_embedding(fname, format="word2vec_bin", normalize=True,
         w.standardize_words(lower=lower, clean_words=clean_words, inplace=True)
     return w
 
+def fetch_CBOW():
+    dir_cbow = '/home/lingfeng/Downloads/cbow_sg_files'
+    words250 = np.load(path.join(dir_cbow, 'word_linear_cbow_250d/words250.npy'))
+    vocabulary_list = []
+    with open(path.join(dir_cbow, "word_linear_cbow_250d/words250.vocab"),"r") as vocab_file:
+        for vocabulary in vocab_file:
+            vocabulary_list.append(vocabulary)
+    dict_cbow = {}
+    for num in range(int(np.array(vocabulary_list).shape[0])):
+            dict_cbow[vocabulary_list[num].strip('\n')] = words250[num]
+    w = Embedding.from_dict(dict_cbow)
+    w.normalize_words(inplace=True)
+    w.standardize_words(lower=True, clean_words=False, inplace=True)
+    return w
 
+def fetch_sg():
+    dir_sg = '/home/lingfeng/Downloads/cbow_sg_files'
+    words250 = np.load(path.join(dir_sg, 'word_linear_sg_250d/words250.npy'))
+    vocabulary_list = []
+    with open(path.join(dir_sg, "word_linear_sg_250d/words250.vocab"),"r") as vocab_file:
+        for vocabulary in vocab_file:
+            vocabulary_list.append(vocabulary)
+    dict_sg = {}
+    for num in range(int(np.array(vocabulary_list).shape[0])):
+        dict_sg[vocabulary_list[num].strip('\n')] = words250[num]
+    w = Embedding.from_dict(dict_sg)
+    w.normalize_words(inplace=True)
+    w.standardize_words(lower=True, clean_words=False, inplace=True)
+    return w
 
 def fetch_GloVe(dim=300, corpus="wiki-6B", normalize=True, lower=False, clean_words=False):
     """

@@ -30,7 +30,7 @@ from importlib import reload
 from web import evaluate
 
 from web.embeddings import fetch_GloVe, load_embedding,fetch_HPCA,fetch_morphoRNNLM,fetch_NMT, \
-        fetch_PDC,fetch_HDC,fetch_SG_GoogleNews,fetch_LexVec,fetch_conceptnet_numberbatch,fetch_FastText
+        fetch_PDC,fetch_HDC,fetch_SG_GoogleNews,fetch_LexVec,fetch_conceptnet_numberbatch,fetch_FastText,fetch_CBOW,fetch_sg
 
 from web.datasets.utils import _get_dataset_dir
 
@@ -38,8 +38,6 @@ from web.datasets.utils import _get_dataset_dir
 
 import pandas as pd
 from six import iteritems
-
-evaluate.print_something()
 
 # Configure logging
 logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', level=logging.DEBUG, datefmt='%I:%M:%S')
@@ -67,15 +65,13 @@ if __name__ == "__main__":
 
     pretrained_word_embeddings = {
         "GloVe": fetch_GloVe(corpus="wiki-6B", dim=300),
-        # "CBOW":
-        # "Skip-grams":
-        # "HPCA": fetch_HPCA(which="hpca"),
-
-        # "PDC": fetch_PDC(),
-        # "HDC": fetch_HDC(),
-        # "SG_GoogleNews": fetch_SG_GoogleNews(),
-        # "LexVec": fetch_LexVec(),
-        # "Conceptnet_numberbatch": fetch_conceptnet_numberbatch(),
+        "CBOW": fetch_CBOW(),
+        "Skip-grams": fetch_sg(),
+        "PDC": fetch_PDC(),
+        "HDC": fetch_HDC(),
+        "SG_GoogleNews": fetch_SG_GoogleNews(),
+        "LexVec": fetch_LexVec(),
+        "Conceptnet_numberbatch": fetch_conceptnet_numberbatch(),
     }
     
 
@@ -92,7 +88,7 @@ if __name__ == "__main__":
     #     format = options.format
 
     #     if not format:
-    #         _, ext = os.path.splitext(fname)
+    #         _, ext = os.path.splitext(fname)exit()
     #         if ext == ".bin":
     #             format = "word2vec_bin"
     #         elif ext == ".txt":

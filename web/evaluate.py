@@ -17,9 +17,6 @@ import scipy
 
 logger = logging.getLogger(__name__)
 
-def print_something():
-    print("I love you")
-
 def calculate_purity(y_true, y_pred):
     """
     Calculate purity for given true and predicted cluster labels.
@@ -368,14 +365,10 @@ def evaluate_on_all(w,word_embedding_name):
         "MTurk": fetch_MTurk(),
         "MEN": fetch_MEN(),
         "WS353": fetch_WS353(),
-        # "WS353R": fetch_WS353(which="relatedness"),
-        # "WS353S": fetch_WS353(which="similarity"),
         "Rubenstein_and_Goodenough": fetch_RG65(),
         "Rare_Words": fetch_RW(),
-        "Multilingual_SimLex999": fetch_multilingual_SimLex999(which="EN"),
         "SimLex999": fetch_SimLex999(),
         "TR9856": fetch_TR9856(),
-        # "RG65": fetch_RG65(),
     }
 
     similarity_results = {}
@@ -387,7 +380,6 @@ def evaluate_on_all(w,word_embedding_name):
     # Calculate results on analogy
     logger.info("Calculating analogy benchmarks")
     analogy_tasks = {
-        # "MSR_WordRep": fetch_wordrep(),
         "Google_analogy": fetch_google_analogy(),
         "MSR": fetch_msr_analogy(),
         # "SEMEVAL 2012 Task 2" 
@@ -399,7 +391,7 @@ def evaluate_on_all(w,word_embedding_name):
         analogy_results[name] = evaluate_analogy(w, data.X, data.y)
         logger.info("Analogy prediction accuracy on {} {}".format(name, analogy_results[name]))
 
-    analogy_results["MSR_WordRep"] = evaluate_on_WordRep(w)
+    analogy_results["MSR_WordRep"] = evaluate_on_WordRep(w)['all']['accuracy']
     logger.info("Analogy prediction accuracy on {} {}".format("MSR_WordRep", analogy_results["MSR_WordRep"]))
 
     analogy_results["SemEval2012_2"] = evaluate_on_semeval_2012_2(w)['all']
