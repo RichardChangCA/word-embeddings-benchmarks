@@ -1,0 +1,32 @@
+  word_embedding     MTurk       MEN  ...      MSR  MSR_WordRep  SemEval2012_2
+0          GloVe  0.633182  0.737465  ...  0.61425     0.233858       0.163963
+
+[1 rows x 12 columns]
+  word_embedding     MTurk       MEN  ...      MSR  MSR_WordRep  SemEval2012_2
+0           CBOW  0.630724  0.691094  ...  0.49275     0.155744       0.175331
+
+[1 rows x 12 columns]
+  word_embedding     MTurk       MEN  ...       MSR  MSR_WordRep  SemEval2012_2
+0     Skip-grams  0.638134  0.711032  ...  0.551375     0.193816       0.198616
+
+[1 rows x 12 columns]
+  word_embedding     MTurk       MEN  ...       MSR  MSR_WordRep  SemEval2012_2
+0            PDC  0.672333  0.772648  ...  0.596375     0.248566       0.174074
+
+[1 rows x 12 columns]
+  word_embedding    MTurk       MEN  ...       MSR  MSR_WordRep  SemEval2012_2
+0            HDC  0.65767  0.760335  ...  0.564375     0.246864       0.184511
+
+[1 rows x 12 columns]
+  word_embedding     MTurk       MEN  ...       MSR  MSR_WordRep  SemEval2012_2
+0  SG_GoogleNews  0.681506  0.758511  ...  0.711875     0.192985        0.20406
+
+[1 rows x 12 columns]
+  word_embedding     MTurk       MEN  ...       MSR  MSR_WordRep  SemEval2012_2
+0         LexVec  0.711555  0.809187  ...  0.601125     0.232029       0.167974
+
+[1 rows x 12 columns]
+           word_embedding     MTurk  ...  MSR_WordRep  SemEval2012_2
+0  Conceptnet_numberbatch  0.719718  ...     0.152881       0.238102
+
+[1 rows x 12 columns]
